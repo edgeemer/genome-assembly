@@ -1,5 +1,5 @@
 # Genome Assembly and Annotation (short)
-       Programm      Source                     Parameters                               Purpose
+              Programm      Source                     Parameters                               Purpose
        **FastQC**         Perun enviroment           Default                                  Quality of raw reads
        **Trimmomatic**    Web                        Default                                  Removing adaptor sequences
        **SPAdes**                                    -k 21,33,55,77 –careful                  Assembly of preprocessed reads to draft genomes
