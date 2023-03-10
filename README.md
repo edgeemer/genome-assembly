@@ -4,10 +4,10 @@
 |**FastQC**|Perun enviroment|Default|Quality of raw reads|
 |**Trimmomatic**|Web|Default|Removing adaptor sequences|
 |**SPAdes**|NA|-k 21,33,55,77 –careful|Assembly of preprocessed reads to draft genomes|
-|**custom script**|This repository|default (min len=200bp & min cov=5)|Additional trimming of the results|
-|**QUAST**|NA|default|Evaluating the quality of the assemblies|
-|**CheckM**|NA|default|Evaluating the completeness and quality of strains|
-|**Prokka**|NA|default|Annotating of the high-quality assemblies|
+|**custom script**|This repository|Default (min len=200bp & min cov=5)|Additional trimming of the results|
+|**QUAST**|NA|Default|Evaluating the quality of the assemblies|
+|**CheckM**|NA|Default|Evaluating the completeness and quality of strains|
+|**Prokka**|NA|Default|Annotating of the high-quality assemblies|
 
 # Genome Assembly and Annotation (long)
 
