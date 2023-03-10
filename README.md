@@ -1,12 +1,12 @@
 # Genome Assembly and Annotation (short)
        Programm      Source                     Parameters                               Purpose
-↓ **FastQC**         Perun enviroment           Default                                  Quality of raw reads
-↓ **Trimmomatic**    Web                        Default                                  Removing adaptor sequences
-↓ **SPAdes**                                    -k 21,33,55,77 –careful                  Assembly of preprocessed reads to draft genomes
-↓ **custom script**  This repository            default (min len=200bp & min cov=5)      Additional trimming of the results
-↓ **QUAST**                                     default                                  Evaluating the quality of the assemblies
-↓ **CheckM**                                    default                                  Evaluating the completeness and quality of strains
-↓ **Prokka**                                    default                                  Annotating of the high-quality assemblies
+       **FastQC**         Perun enviroment           Default                                  Quality of raw reads
+       **Trimmomatic**    Web                        Default                                  Removing adaptor sequences
+       **SPAdes**                                    -k 21,33,55,77 –careful                  Assembly of preprocessed reads to draft genomes
+       **custom script**  This repository            default (min len=200bp & min cov=5)      Additional trimming of the results
+       **QUAST**                                     default                                  Evaluating the quality of the assemblies
+       **CheckM**                                    default                                  Evaluating the completeness and quality of strains
+       **Prokka**                                    default                                  Annotating of the high-quality assemblies
 
 # Genome Assembly and Annotation (long)
 
