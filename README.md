@@ -9,6 +9,14 @@
 |**CheckM**|NA|Default|Evaluating the completeness and quality of strains|
 |**Prokka**|NA|Default|Annotating of the high-quality assemblies|
 
+1. Use FastQC (v0.11.7) by Andrews (2010) to assess the quality of raw reads.
+2. Use Trimmomatic (v0.36) by Bolger et al. (2014) to quality trim the raw reads, removing adaptor sequences, using default settings.
+3. Use SPAdes (v3.11.0) by Bankevich et al. (2012) to perform de novo assembly on the preprocessed reads with parameters -k 21,33,55,77 –careful.
+4. Trim the resulting scaffolds.fasta files using a custom script (provided separately) with a minimum length parameter of 200 bp and a minimum coverage parameter of 5.
+5. Evaluate the quality of the assemblies using QUAST (v5.0.2) by Gurevich et al. (2013) to calculate assembly statistics.
+6. Use CheckM by Parks et al. (2015) to evaluate the completeness and quality of 753 assembled strains and filter out 39 E. coli isolates with strain heterogeneity lower than 50%.
+7. Annotate the high-quality assemblies using Prokka (v1.12) by Seemann (2014) with default parameters to identify open reading frames.
+
 # Genome Assembly and Annotation (long)
 
 **FastQC** (Perun) (v0.11.7) (Andrews, 2010) was used to assess the quality of raw reads, which were then quality trimmed to remove adaptor sequences using **Trimmomatic** (is downloaded from the web) (v0.36) (Bolger et al., 2014) at default settings. Draft genomes were de novo assembled from preprocessed reads using the **SPAdes** (v3.11.0) algorithm (Bankevich et al., 2012) (parameters, -k 21,33,55,77 –careful). The resulting scaffolds.fasta files were furtherly trimmed by **a custom script** (provided separately) at the parameters of the minimum length at 200 bp and minimum coverage at 5. Then the quality of the assemblies was controlled using the assembly statistics calculated by the tool **QUAST** (v5.0.2) (Gurevich et al., 2013). Then **CheckM** (Parks et al., 2015) was used to evaluated the completeness and quality of 753 assembled strains. 39 E. coli isolates with the strain heterogeneity lower than 50% were filtered. Furtherly, high-quality assemblies were annotated using **Prokka** (v1.12) software (Seemann, 2014) (default parameters) to identify open reading frames.
