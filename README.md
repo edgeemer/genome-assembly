@@ -1,9 +1,9 @@
 # Genome Assembly and Annotation (short)
 |Programm|Source|Parameters|Purpose|
 |:------:|:----:|:--------:|:-----:|
-|**FastQC**|Perun enviroment|Default|Quality of raw reads|
-|**Trimmomatic**|Web|Default|Removing adaptor sequences|
-|**SPAdes**|NA|-k 21,33,55,77 –careful|Assembly of preprocessed reads to draft genomes|
+|**FastQC**|Perun environment|Default|Quality of raw reads|
+|**Trimmomatic**|Perun environment|Default|Removing adaptor sequences|
+|**SPAdes**|Perun environment|-k 21,33,55,77 –careful|Assembly of preprocessed reads to draft genomes|
 |**custom script**|This repository|Default (min len=200bp & min cov=5)|Additional trimming of the results|
 |**QUAST**|NA|Default|Evaluating the quality of the assemblies|
 |**CheckM**|NA|Default|Evaluating the completeness and quality of strains|
