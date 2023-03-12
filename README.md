@@ -2,6 +2,7 @@
 |Programm|Source|Parameters|Purpose|
 |:------:|:----:|:--------:|:-----:|
 |**FastQC**|Perun environment|Default|Quality of raw reads|
+|**FastP**|Perun environment|Over 20 |Trip reads to achieve better quality|
 |**Trimmomatic**|Perun environment|Default|Removing adaptor sequences|
 |**SPAdes**|Perun environment|-k 21,33,55,77 –careful|Assembly of preprocessed reads to draft genomes|
 |**custom script**|This repository|Default (min len=200bp & min cov=5)|Additional trimming of the results|
