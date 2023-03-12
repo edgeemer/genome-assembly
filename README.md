@@ -10,13 +10,13 @@
 |**CheckM**|NA|Default|Evaluating the completeness and quality of strains|
 |**Prokka**|NA|Default|Annotating of the high-quality assemblies|
 
-1. Use FastQC (v0.11.7) by Andrews (2010) to assess the quality of raw reads.
+1. Use FastQC to assess the quality of raw reads.
 2. Use FastP to quality trim the raw reads, removing adaptor sequences, using default settings, and removing parts with low quality and short length by parameters --qualified_quality_phred --length_required.
-3. Use SPAdes (v3.11.0) by Bankevich et al. (2012) to perform de novo assembly on the preprocessed reads with parameters -k 21,33,55,77 –careful.
+3. Use SPAdes to perform de novo assembly on the preprocessed reads with parameters -k 21,33,55,77 –careful.
 4. Trim the resulting scaffolds.fasta files using a custom script (provided separately) with a minimum length parameter of 200 bp and a minimum coverage parameter of 5.
-5. Evaluate the quality of the assemblies using QUAST (v5.0.2) by Gurevich et al. (2013) to calculate assembly statistics.
-6. Use CheckM by Parks et al. (2015) to evaluate the completeness and quality of 753 assembled strains and filter out 39 E. coli isolates with strain heterogeneity lower than 50%.
-7. Annotate the high-quality assemblies using Prokka (v1.12) by Seemann (2014) with default parameters to identify open reading frames.
+5. Evaluate the quality of the assemblies using QUAST to calculate assembly statistics.
+6. Use CheckM to evaluate the completeness and quality of 753 assembled strains and filter out 39 E. coli isolates with strain heterogeneity lower than 50%.
+7. Annotate the high-quality assemblies using Prokka with default parameters to identify open reading frames.
 
 # Genome Assembly and Annotation (long)
 
