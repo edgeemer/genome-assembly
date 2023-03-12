@@ -4,7 +4,6 @@
 |**FastQC**|Perun environment|Default|Quality of raw reads|
 |**MultiQC**|Perun environment|Default|Informative reports for FastQC data|
 |**FastP**|Perun environment|--qualified_quality_phred 20 --length_required 50 |Trim reads to achieve better quality|
-|**Trimmomatic**|Perun environment|Default|Removing adaptor sequences|
 |**SPAdes**|Perun environment|-k 21,33,55,77 –careful|Assembly of preprocessed reads to draft genomes|
 |**custom script**|This repository|Default (min len=200bp & min cov=5)|Additional trimming of the results|
 |**QUAST**|NA|Default|Evaluating the quality of the assemblies|
@@ -12,7 +11,7 @@
 |**Prokka**|NA|Default|Annotating of the high-quality assemblies|
 
 1. Use FastQC (v0.11.7) by Andrews (2010) to assess the quality of raw reads.
-2. Use Trimmomatic (v0.36) by Bolger et al. (2014) to quality trim the raw reads, removing adaptor sequences, using default settings.
+2. Use FastP to quality trim the raw reads, removing adaptor sequences, using default settings, and removing parts with low quality and short length by parameters --qualified_quality_phred --length_required.
 3. Use SPAdes (v3.11.0) by Bankevich et al. (2012) to perform de novo assembly on the preprocessed reads with parameters -k 21,33,55,77 –careful.
 4. Trim the resulting scaffolds.fasta files using a custom script (provided separately) with a minimum length parameter of 200 bp and a minimum coverage parameter of 5.
 5. Evaluate the quality of the assemblies using QUAST (v5.0.2) by Gurevich et al. (2013) to calculate assembly statistics.
