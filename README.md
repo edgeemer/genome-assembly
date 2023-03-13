@@ -8,7 +8,7 @@
 |**SPAdes**|Perun environment|-k 21,33,55,77 –careful|Assembly of preprocessed reads to draft genomes|
 |**custom script**|This repository|Default (min len=200bp & min cov=5)|Additional trimming of the results|
 |**QUAST**|Perun environment|Default|Evaluating the quality of the assemblies|
-|**QUAST MultiQC**|Perun environment|Default|Informative reports for QUAST data|
+|**MultiQC**|Perun environment|Default|Informative reports for QUAST data|
 |**CheckM**|NA|Default|Evaluating the completeness and quality of strains|
 |**Prokka**|NA|Default|Annotating of the high-quality assemblies|
 
