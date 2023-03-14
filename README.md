@@ -9,8 +9,8 @@
 |**custom script**|This repository|Default (min len=200bp & min cov=5)|Additional trimming of the results|
 |**QUAST**|Perun environment|Default|Evaluating the quality of the assemblies|
 |**MultiQC**|Perun environment|Default|Informative reports for QUAST data|
-|**CheckM**|NA|Default|Evaluating the completeness and quality of strains|
-|**Prokka**|NA|Default|Annotating of the high-quality assemblies|
+|**CheckM**|Perun environment|Default|Evaluating the completeness and quality of strains|
+|**Prokka**|Perun environment|Default|Annotating of the high-quality assemblies|
 
 1. Use FastQC to assess the quality of raw reads.
 2. Use FastP to quality trim the raw reads, removing adaptor sequences, using default settings, and removing parts with low quality and short length by parameters --qualified_quality_phred --length_required.
