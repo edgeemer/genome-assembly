@@ -9,7 +9,7 @@
 | 🟩 | 3 | FastQC | Quality Check | [MultiQC_trimmed](https://edgeemer.github.io/B_burgdorferi_MultiQC_trimmed/) |
 | 🟩 | 4 | SPAdes | Reads -> scaffolds |  |
 | 🟩 | 5 | custom script | Polishing scaffolds (len and coverage) |  |
-| 🟨 | 6 | QUAST + CheckM | Quality check | [MultiQC_QUAST](https://edgeemer.github.io/B_burgdorferi_MultiQC_QUAST/) [MultiQC_QUAST_ref_test](https://edgeemer.github.io/B_burgdorferi_QUAST_ref_test/) |
+| 🟨 | 6 | QUAST + CheckM | Quality check | [MultiQC_QUAST](https://edgeemer.github.io/B_burgdorferi_MultiQC_QUAST/) | [MultiQC_QUAST_ref_test](https://edgeemer.github.io/B_burgdorferi_QUAST_ref_test/) |
 | 🟩 | 7 | bowtie-build | create basenames |  |
 | 🟨 | 8 | Bowtie2 | Mapping raw reads |  |
 | ⬜️ | 9 | samtools | SAM file to BAM |  |
