@@ -10,14 +10,15 @@
 | 4 | SPAdes | Reads -> scaffolds |
 | 5 | custom script | Polishing scaffolds (len and coverage) |
 | 6 | QUAST + CheckM | Quality check |
-| 7 | Bowtie2 | Mapping raw reads |
-| 8 | samtools | SAM file to BAM |
-| 9 | samtools | Sort and index the BAM file |
-| 10 | bedtools | Convert the assembly to BED format |
-| 11 | bedtools | Calculate coverage |
-| 12 | IGV | Visualize coverage |
-| 13 | Racoon | Polishing assembly |
-| 14 | IGV | Visualize coverage |
+| 7 | bowtie-build | create basenames |
+| 8 | Bowtie2 | Mapping raw reads |
+| 9 | samtools | SAM file to BAM |
+| 10 | samtools | Sort and index the BAM file |
+| 11 | bedtools | Convert the assembly to BED format |
+| 12 | bedtools | Calculate coverage |
+| 13 | IGV | Visualize coverage |
+| 14 | Racoon | Polishing assembly |
+| 15 | IGV | Visualize coverage |
   
 |Programm|Source|Parameters|Purpose|
 |:------:|:----:|:--------:|:-----:|
