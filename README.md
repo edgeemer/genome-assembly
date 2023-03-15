@@ -2,23 +2,23 @@
 
 <h3 align="center">Current pipleine</h3>
   
-|Step|Software|Brief description|
-|:--:|:--:|:--:|
-| 1 | FastQC | Quality check |
-| 2 | FastP | Polishing raw reads (len and coverage) |
-| 3 | FastQC | Quality Check |
-| 4 | SPAdes | Reads -> scaffolds |
-| 5 | custom script | Polishing scaffolds (len and coverage) |
-| 6 | QUAST + CheckM | Quality check |
-| 7 | bowtie-build | create basenames |
-| 8 | Bowtie2 | Mapping raw reads |
-| 9 | samtools | SAM file to BAM |
-| 10 | samtools | Sort and index the BAM file |
-| 11 | bedtools | Convert the assembly to BED format |
-| 12 | bedtools | Calculate coverage |
-| 13 | IGV | Visualize coverage |
-| 14 | Racoon | Polishing assembly |
-| 15 | IGV | Visualize coverage |
+|State|Step|Software|Brief description| Report |
+|:--:|:--:|:--:|:--:|:--:|
+| 🟩 | 1 | FastQC | Quality check | [MultiQC_init](https://edgeemer.github.io/B_burgdorferi_MuliQC_init/) |
+| 🟩 | 2 | FastP | Polishing raw reads (len and coverage) |  |
+| 🟩 | 3 | FastQC | Quality Check | [MultiQC_trimmed](https://edgeemer.github.io/B_burgdorferi_MultiQC_trimmed/) |
+| 🟩 | 4 | SPAdes | Reads -> scaffolds |  |
+| 🟩 | 5 | custom script | Polishing scaffolds (len and coverage) |  |
+| 🟨 | 6 | QUAST + CheckM | Quality check | [MultiQC_QUAST](https://edgeemer.github.io/B_burgdorferi_MultiQC_QUAST/) [MultiQC_QUAST_ref_test](https://edgeemer.github.io/B_burgdorferi_QUAST_ref_test/) |
+| 🟩 | 7 | bowtie-build | create basenames |  |
+| 🟨 | 8 | Bowtie2 | Mapping raw reads |  |
+| ⬜️ | 9 | samtools | SAM file to BAM |  |
+| ⬜️ | 10 | samtools | Sort and index the BAM file |  |
+| ⬜️ | 11 | bedtools | Convert the assembly to BED format |  |
+| ⬜️ | 12 | bedtools | Calculate coverage |  |
+| ⬜️ | 13 | IGV | Visualize coverage |  |
+| ⬜️ | 14 | Racoon | Polishing assembly |  |
+| ⬜️ | 15 | IGV | Visualize coverage |  |
   
 |Programm|Source|Parameters|Purpose|
 |:------:|:----:|:--------:|:-----:|
@@ -52,7 +52,7 @@
 6. Use CheckM to evaluate the completeness and quality of 753 assembled strains and filter out 39 E. coli isolates with strain heterogeneity lower than 50%.
 7. Annotate the high-quality assemblies using Prokka with default parameters to identify open reading frames.
 
-<h1 align="center">Genome Assembly and Annotation (long)</h1>
+<h1 align="center">Genome Assembly and Annotation (detailed)</h1>
 
 **FastQC** (Perun) (v0.11.7) (Andrews, 2010) was used to assess the quality of raw reads, which were then quality trimmed to remove adaptor sequences using **Trimmomatic** (is downloaded from the web) (v0.36) (Bolger et al., 2014) at default settings. Draft genomes were de novo assembled from preprocessed reads using the **SPAdes** (v3.11.0) algorithm (Bankevich et al., 2012) (parameters, -k 21,33,55,77 –careful). The resulting scaffolds.fasta files were furtherly trimmed by **a custom script** (provided separately) at the parameters of the minimum length at 200 bp and minimum coverage at 5. Then the quality of the assemblies was controlled using the assembly statistics calculated by the tool **QUAST** (v5.0.2) (Gurevich et al., 2013). Then **CheckM** (Parks et al., 2015) was used to evaluated the completeness and quality of 753 assembled strains. 39 E. coli isolates with the strain heterogeneity lower than 50% were filtered. Furtherly, high-quality assemblies were annotated using **Prokka** (v1.12) software (Seemann, 2014) (default parameters) to identify open reading frames.
 
