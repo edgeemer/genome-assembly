@@ -3,7 +3,7 @@
 <h3 align="center">Current pipleine</h3>
   
 |Step|Software|Brief description|
-|:--:|:--:|:--:|:--:|
+|:--:|:--:|:--:|
 | 1 | FastQC | Quality check |
 | 2 | FastP | Polishing raw reads (len and coverage) |
 | 3 | FastQC | Quality Check |
