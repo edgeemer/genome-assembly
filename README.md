@@ -19,7 +19,23 @@
 | ⬜️ | 13 | IGV | Visualize coverage |  |
 | ⬜️ | 14 | Racoon | Polishing assembly |  |
 | ⬜️ | 15 | IGV | Visualize coverage |  |
-  
+
+1. FastQC is used to perform quality control checks on the raw reads before assembly.
+1. FastP is used to polish the raw reads for length and coverage.
+1. FastQC is again used to perform quality control checks on the polished reads.
+1. SPAdes is used for assembling the reads into scaffolds.
+1. A custom script is used to polish the scaffolds for length and coverage.
+1. QUAST and CheckM are used for assessing the quality of the resulting assembly.
+1. Bowtie-build is used to create basenames for the reads.
+1. Bowtie2 is used to map the raw reads to the assembled scaffolds.
+1. Samtools is used to convert the SAM files to BAM format.
+1. Samtools is again used to sort and index the BAM files.
+1. Bedtools is used to convert the assembly to BED format.
+1. Bedtools is again used to calculate coverage.
+1. IGV is used for visualizing coverage.
+1. Racoon is used to further polish the assembly.
+1. IGV is again used for visualizing coverage.
+
 |Programm|Source|Parameters|Purpose|
 |:------:|:----:|:--------:|:-----:|
 |**FastQC**|Perun environment|Default|Quality of raw reads|
@@ -43,14 +59,6 @@
 |**QUAST**| quast /path/to/input/file.fasta --output-dir /path/to/output/ --reference /path/to/reference/genome |
 |**CheckM**| checkm lineage_wf /path/to/input/ /path/to/output/ -x fasta |
 |**Prokka**||
-
-1. Use FastQC to assess the quality of raw reads.
-2. Use FastP to quality trim the raw reads, removing adaptor sequences, using default settings, and removing parts with low quality and short length by parameters --qualified_quality_phred --length_required.
-3. Use SPAdes to perform de novo assembly on the preprocessed reads with parameters -k 21,33,55,77 –careful.
-4. Trim the resulting scaffolds.fasta files using a custom script (provided separately) with a minimum length parameter of 200 bp and a minimum coverage parameter of 5.
-5. Evaluate the quality of the assemblies using QUAST to calculate assembly statistics.
-6. Use CheckM to evaluate the completeness and quality of 753 assembled strains and filter out 39 E. coli isolates with strain heterogeneity lower than 50%.
-7. Annotate the high-quality assemblies using Prokka with default parameters to identify open reading frames.
 
 <h1 align="center">Genome Assembly and Annotation (detailed)</h1>
 
