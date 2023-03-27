@@ -74,24 +74,21 @@ def main():
             # Calculate average coverage into separate file
             average_coverage = (total_coverage / total_length)
 
-            with open(f'{output_path}/average_coverage.txt', 'a+') as cov_outfile:
+            with open(f'{output_path}/average_coverage.md', 'a+') as cov_outfile:
 
                 # Templates for lines
-                header = '#{:^98}#{:^28}#\n'.format('Assembly name', 'Average Coverage')
-                empty_line_header = '#{:^98}#{:^28}#\n'.format('#' * 98, '#' * 28)
-                empty_line = '|{:^98}|{:^28}|\n'.format('-' * 98, '-' * 28)
+                header = '|{:^98}|{:^28}|\n'.format('Assembly name', 'Average Coverage')
+                empty_line_header = '|:{:^96}:|:{:^26}:|\n'.format('-' * 98, '-' * 28)
                 output_line = '|{:^98}|{:^28}|\n'.format(
                     f"{'.'.join(input_file.split('.')[0:-1]).split('/')[-1]}_custom.fasta", average_coverage)
 
                 # Create header in case of new file
                 if cov_outfile.tell() == 0:
-                    cov_outfile.write(empty_line_header)
                     cov_outfile.write(header)
                     cov_outfile.write(empty_line_header)
 
                 # Add average coverage result to the relevant assembly
                 cov_outfile.write(output_line)
-                cov_outfile.write(empty_line)
 
 
 if __name__ == '__main__':
