@@ -38,7 +38,7 @@ def main():
         ):
 
             # Open input file and read lines into list
-            with open(input_file, 'r') as handle:
+            with open(f'{input_path}/{input_file}', 'r') as handle:
                 lines = handle.readlines()
 
             # Create defaultdict to store sequences keyed by header
