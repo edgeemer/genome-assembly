@@ -77,7 +77,7 @@ def main():
                             total_length = total_length + length
 
             # Calculate average coverage into separate file
-            average_coverage = (total_coverage / total_length)
+            average_coverage = round((total_coverage / total_length), 2)
 
             with open(f'{output_path}/average_coverage.md', 'a+') as cov_outfile:
 
