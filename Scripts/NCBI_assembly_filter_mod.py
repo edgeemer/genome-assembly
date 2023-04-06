@@ -67,7 +67,7 @@ def main():
 
                     # Extract length and coverage information from header
                     if header.startswith(">"):
-                        _, _, _, length, _, cov = header.split("_")
+                        _, _, _, length, _, cov, *args = header.split("_")
                         length, cov = float(length), float(cov)
 
                         # Filter sequences based on length and coverage criteria
