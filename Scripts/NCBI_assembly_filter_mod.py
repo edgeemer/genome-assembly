@@ -2,22 +2,26 @@ from collections import defaultdict
 from argparse import ArgumentParser, ArgumentError
 import os
 
-desc = "Custom script for trimming scaffolds.fasta files at the parameters of the minimum length at 200 bp and " \
-       "minimum coverage at 5. In addition, coverage summary for all assembly files is generated.\n " \
+desc = "Custom script for trimming scaffolds.fasta files at the parameters of the minimum length and " \
+       "minimum coverage specified by the user. If the length or coverage parameters are not provided, the " \
+       "defaults of 200 bp and 5, respectively, will be used. In addition, coverage summary for all assembly " \
+       "files is generated.\n " \
        "======\n" \
-       "Usage: python3 NCBI_assembly_filter_mod.py -i /path/to/input/directory -o /path/to/output/directory\n" \
+       "Usage: python3 NCBI_assembly_filter_mod.py -i /path/to/input/directory -o /path/to/output/directory " \
+       "[-l MIN_LENGTH] [-c MIN_COVERAGE]\n" \
        "======\n" \
        "Based on NCBI_assembly_filter_defaultdict.by\nDepartment of Biochemistry and Molecular Biology, Dalhousie " \
        "University\n" \
        "This version is modified and implemented by Dmytro Tymoshenko (RA at the mentioned " \
-       "department), March 10/2023, Github <https://github.com/edgeemer>"
-
-min_len: int = 200
-min_cov: int = 5
+       "department), April 06/2023, Github <https://github.com/edgeemer>"
 
 parser = ArgumentParser(description=desc)
 parser.add_argument('-i', '--input', type=str, help='Input directory path', required=True)
 parser.add_argument('-o', '--output', type=str, help='Output directory path', required=True)
+parser.add_argument('-l', '--length', type=int, help='Minimum length threshold for sequence filtering (default: 200)',
+                    default=200)
+parser.add_argument('-c', '--coverage', type=int, help='Minimum coverage threshold for sequence filtering (default: 5)',
+                    default=5)
 
 
 def main():
@@ -25,6 +29,7 @@ def main():
     try:
         args = parser.parse_args()
         input_path, output_path = args.input.rstrip('/'), args.output.rstrip('/')
+        min_len, min_cov = args.length, args.coverage
 
     except ArgumentError as e:
         print(f"Error: {e}")
@@ -55,7 +60,7 @@ def main():
             #                     total length                      len(0) + len(1) + ... + len(n)
 
             total_coverage, total_length = 0.0, 0.0
-            with open(f"{output_path}/{'.'.join(input_file.split('.')[0:-1]).split('/')[-1]}_custom.fasta", 'w+')\
+            with open(f"{output_path}/{'.'.join(input_file.split('.')[0:-1]).split('/')[-1]}_custom.fasta", 'w+') \
                     as outfile:
 
                 for header in sequences.keys():
