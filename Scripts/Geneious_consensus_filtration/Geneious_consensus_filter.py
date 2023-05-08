@@ -1,7 +1,6 @@
 from collections import defaultdict
 from argparse import ArgumentParser, RawTextHelpFormatter, ArgumentError, ArgumentTypeError
 from pathlib import Path
-import time
 
 desc = "\nScript is used for assembly filtration and quality analysis (originally for geneious consensus output)." \
        "\nIt also uses reflen parameter in the headline to calculate coverage and generates report of" \
@@ -15,19 +14,19 @@ desc = "\nScript is used for assembly filtration and quality analysis (originall
        "\n      ?????????ACCTT????GGCC??????   => INPUT SYMBOL = ? => ACCTT????GGCC" \
        "\nIf REFERENCE LENGTH inside HEADERS is provided ( >{your_text}_reflen_1500_{your_text} )" \
        "and PERCENTAGE is available (75 by default) sequences with lower SIMILARITY will not pass to the final files." \
-       " Filtration is based on COUNTED SYMBOLS (default: ?), parsed as string: -cs RYM?" \
+       " Filtration is based on COUNTED SYMBOLS (default: N?) parsed as string. Example: -cs RYMN?" \
        "\nIn the OUTPUT DIRECTORY report file is generated." \
        "\n\nDepartment of Biochemistry and Molecular Biology, Dalhousie University\n" \
        "This version is developed and implemented by Dmytro Tymoshenko (RA at the mentioned department), " \
        "MAY 02/2023, Github <https://github.com/edgeemer>"
 
 usage = "\npython <script_name>.py [-h] -i INPUT -o OUTPUT " \
-        "[-p PERCENTAGE] [-is INPUT_SYMBOL] [-os OUTPUT_SYMBOL]\n" \
+        "[-p PERCENTAGE] [-cs COUNTED_SYMBOLS] [-os OUTPUT_SYMBOL]\n" \
         "Options:\n" \
         "-i, --input             Input directory path\n" \
         "-o, --output            Output directory path\n" \
         "-p, --percentage        Percentage of known nucleotides in sequences (default: 75)\n" \
-        "-cs, --counted_symbols  Symbol for percentage calculation (default: ?)\n"
+        "-cs, --counted_symbols  Symbols for percentage calculation (default: N?)\n"
 
 parser = ArgumentParser(description=desc, formatter_class=RawTextHelpFormatter, usage=usage)
 parser.add_argument('-i', '--input', type=str, help='Input directory path', required=True)
@@ -62,8 +61,10 @@ def initialisation():
 def main():
     input_path, output_path, percentage, counted_symbols = initialisation()
 
-    # Create dict with all possible variants for report statistics and coverage calculation
-    all_symbols = defaultdict(str)
+    # Create dict with all possible variants for report statistics and coverage calculation.
+    # IUPAC ambiguous nucleotide codes: R: A or G | Y: C or T | M: A or C | K: G or T | S: C or G | W: A or T |
+    # H: A or C or T | B: C or G or T | V: A or C or G | D: A or G or T | N: A or C or G or T
+
     all_symbols = {
         "counted": counted_symbols,
         "two_nucleotides": "RYMKSW",
@@ -84,6 +85,7 @@ def main():
 
         # Create defaultdict to store sequences keyed by header
         sequences = defaultdict(list)
+        header = ''
         for line in lines:
             header = line.strip() if line.startswith(">") else sequences[header].append(line.strip())
 
@@ -140,10 +142,14 @@ def main():
                         reflen, coverage, = 0, 0
 
                     # Calculate quality of the sequence on itself
-                    counted = int(round(sequence_calculations["counted"] / len(str_sequences[header]) * 100))
-                    two_nucleotides = int(round(sequence_calculations["two_nucleotides"] / len(str_sequences[header]) * 100))
-                    three_nucleotides = int(round(sequence_calculations["three_nucleotides"] / len(str_sequences[header]) * 100))
-                    all_nucleotides_and_gap = int(round(sequence_calculations["all_nucleotides|gap"] / len(str_sequences[header]) * 100))
+                    counted = int(round(
+                        sequence_calculations["counted"] / len(str_sequences[header]) * 100))
+                    two_nucleotides = int(round(
+                        sequence_calculations["two_nucleotides"] / len(str_sequences[header]) * 100))
+                    three_nucleotides = int(round(
+                        sequence_calculations["three_nucleotides"] / len(str_sequences[header]) * 100))
+                    all_nucleotides_and_gap = int(round(
+                        sequence_calculations["all_nucleotides|gap"] / len(str_sequences[header]) * 100))
 
                     # Filter sequences from str_sequences and write them to output file
                     # based on similarity criteria or reference length absence
