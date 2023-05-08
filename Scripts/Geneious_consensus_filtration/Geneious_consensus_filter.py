@@ -1,19 +1,21 @@
 from collections import defaultdict
 from argparse import ArgumentParser, RawTextHelpFormatter, ArgumentError, ArgumentTypeError
 from pathlib import Path
+import time
 
-desc = "\nScript is used for assembly filtration and symbol replacing (originally geneious consensus output)." \
-       "\nIt also uses reflen parameter in the headline to calculate similarity and generates report of" \
+desc = "\nScript is used for assembly filtration and quality analysis (originally for geneious consensus output)." \
+       "\nIt also uses reflen parameter in the headline to calculate coverage and generates report of" \
        "the resulting filtration:\n" \
        "\n└INPUT_DIRECTORY (exists)               └OUTPUT_DIRECTORY (exists or will be created)   " \
        "\n   ├ {name_1}.fasta (exists)      =>      ├ {name_1}_filtered.fasta (will be created/overwritten) " \
        "\n   ├ {name_2}.fasta (exists)      =>      ├ {name_2}_filtered.fasta (will be created/overwritten) " \
-       "\n   ├ {name_3}.fasta (exists)              ├ {name_3}_filtered.fasta (will be created/overwritten) " \
-       "\n\nIn each file, INPUT SYMBOL is changed to OUTPUT SYMBOL inside sequences," \
-       "as well as sequences are trimmed to the first non-INPUT SYMBOL from both sides:" \
-       "\n      ?????????ACCTT????GGCC??????   => INPUT SYMBOL = ? | OUTPUT SYMBOL = N => ACCTTNNNNGGCC" \
+       "\n   └ {name_3}.fasta (exists)              ├ {name_3}_filtered.fasta (will be created/overwritten) " \
+       "\n                                          └ filtration_report.md    (will be created/overwritten)" \
+       "\n\nIn each file, sequences are trimmed to the first non-? SYMBOL from both sides:" \
+       "\n      ?????????ACCTT????GGCC??????   => INPUT SYMBOL = ? => ACCTT????GGCC" \
        "\nIf REFERENCE LENGTH inside HEADERS is provided ( >{your_text}_reflen_1500_{your_text} )" \
-       "and SIMILARITY is availavle (75 by default) sequences with lower SIMILARITY will not pass to the final files." \
+       "and PERCENTAGE is available (75 by default) sequences with lower SIMILARITY will not pass to the final files." \
+       " Filtration is based on COUNTED SYMBOLS (default: ?), parsed as string: -cs RYM?" \
        "\nIn the OUTPUT DIRECTORY report file is generated." \
        "\n\nDepartment of Biochemistry and Molecular Biology, Dalhousie University\n" \
        "This version is developed and implemented by Dmytro Tymoshenko (RA at the mentioned department), " \
@@ -22,21 +24,18 @@ desc = "\nScript is used for assembly filtration and symbol replacing (originall
 usage = "\npython <script_name>.py [-h] -i INPUT -o OUTPUT " \
         "[-p PERCENTAGE] [-is INPUT_SYMBOL] [-os OUTPUT_SYMBOL]\n" \
         "Options:\n" \
-        "-i, --input            Input directory path\n" \
-        "-o, --output           Output directory path\n" \
-        "-p, --percentage       Percentage of known nucleotides in sequences (default: 75)\n" \
-        "-is, --input_symbol    Symbol for replacement (default: ?)\n" \
-        "-os, --output_symbol   Used for replacement symbol (default: N)\n"
+        "-i, --input             Input directory path\n" \
+        "-o, --output            Output directory path\n" \
+        "-p, --percentage        Percentage of known nucleotides in sequences (default: 75)\n" \
+        "-cs, --counted_symbols  Symbol for percentage calculation (default: ?)\n"
 
 parser = ArgumentParser(description=desc, formatter_class=RawTextHelpFormatter, usage=usage)
 parser.add_argument('-i', '--input', type=str, help='Input directory path', required=True)
 parser.add_argument('-o', '--output', type=str, help='Output directory path', required=True)
 parser.add_argument('-p', '--percentage', type=int, help='Percentage of known nucleotides in sequences (default: 75)',
                     default=75)
-parser.add_argument('-is', '--input_symbol', type=str, help='Symbol for replacement (default: ?)',
+parser.add_argument('-cs', '--counted_symbols', type=str, help='Symbols for subtracting from a sequence (default: ?)',
                     default="?")
-parser.add_argument('-os', '--output_symbol', type=str, help='Used for replacement symbol (default: N)',
-                    default="N")
 
 
 def initialisation():
@@ -50,10 +49,9 @@ def initialisation():
 
         # Optional
         percentage: int = args.percentage
-        input_symbol: str = args.input_symbol
-        output_symbol: str = args.output_symbol
+        counted_symbols: str = args.counted_symbols
 
-        return input_path, output_path, percentage, input_symbol, output_symbol
+        return input_path, output_path, percentage, counted_symbols
 
     except (ArgumentError, ArgumentTypeError) as e:
         print(f"Check help! Error: {e}")
@@ -62,7 +60,16 @@ def initialisation():
 
 
 def main():
-    input_path, output_path, percentage, input_symbol, output_symbol = initialisation()
+    input_path, output_path, percentage, counted_symbols = initialisation()
+
+    # Create dict with all possible variants for report statistics and coverage calculation
+    all_symbols = defaultdict(str)
+    all_symbols = {
+        "counted": counted_symbols,
+        "two_nucleotides": "RYMKSW",
+        "three_nucleotides": "HBVD",
+        "all_nucleotides|gap": "N-"
+    }
 
     # Create {output_path} if it doesn't exist
     output_path.mkdir() if not output_path.exists() else None
@@ -84,14 +91,14 @@ def main():
         # in str type
         str_sequences = defaultdict(str)
         for header, sequence in sequences.items():
-            str_sequences[header] = ''.join(sequences[header]).strip(input_symbol)
+            str_sequences[header] = ''.join(sequences[header]).strip("?")
 
         # Create/Overwrite the output file in the output directory
         with open(f"{output_path}/{input_file.stem}_filtered.fasta", 'w') \
                 as outfile:
 
-            # Create defaultdict to store similarity calculations for the report
-            similarity_to_reference = defaultdict(int)
+            # Create defaultdict to store similarity and nucleotide calculations for the report
+            calculations = defaultdict(dict)
 
             """
             Extract reflen (reference length) from header (xxxxx_reflen_1500_xxxx.fasta) and calculate coverage:
@@ -103,28 +110,68 @@ def main():
 
             for header in str_sequences.keys():
                 if header.startswith(">"):
+
+                    # Calculate nucleotide types in order to categorize
+                    sequence_calculations = {
+                        "counted": 0,
+                        "two_nucleotides": 0,
+                        "three_nucleotides": 0,
+                        "all_nucleotides|gap": 0
+                    }
+
+                    # If symbol in COUNTED, we do not calculate it in other groups
+                    for symbol_list_name, symbol_list in all_symbols.items():
+                        for symbol in symbol_list:
+                            if symbol in all_symbols["counted"] and symbol_list_name != "counted":
+                                pass
+                            else:
+                                sequence_calculations[symbol_list_name] += str_sequences[header].count(symbol)
+
+                    # Calculate coverage based on nucleotide types
                     header_arg_list = header.split("_")
+                    # If reference length is presented
                     if "reflen" in header_arg_list:
                         reflen = int(header_arg_list[header_arg_list.index("reflen") + 1])
-                        non_input_symbols = len(str_sequences[header]) - str_sequences[header].count(input_symbol)
-                        similarity = int(round(non_input_symbols / reflen * 100))
+
+                        not_counted_nucleotides = len(str_sequences[header]) - sequence_calculations["counted"]
+                        coverage = int(round(not_counted_nucleotides / reflen * 100))
+                    # # If reference length is not presented
                     else:
-                        reflen, similarity = 0, 0
+                        reflen, coverage, = 0, 0
+
+                    # Calculate quality of the sequence on itself
+                    counted = int(round(sequence_calculations["counted"] / len(str_sequences[header]) * 100))
+                    two_nucleotides = int(round(sequence_calculations["two_nucleotides"] / len(str_sequences[header]) * 100))
+                    three_nucleotides = int(round(sequence_calculations["three_nucleotides"] / len(str_sequences[header]) * 100))
+                    all_nucleotides_and_gap = int(round(sequence_calculations["all_nucleotides|gap"] / len(str_sequences[header]) * 100))
 
                     # Filter sequences from str_sequences and write them to output file
                     # based on similarity criteria or reference length absence
-                    if not reflen or (similarity >= percentage):
-                        outfile.write(f"{header}\n{str_sequences[header].replace(input_symbol, output_symbol)}\n")
-                        similarity_to_reference[header] = similarity
+                    if not reflen or (coverage >= percentage):
+                        outfile.write(f"{header}\n{str_sequences[header]}\n")
+                        calculations[header] = {"coverage": coverage,
+                                                "counted": counted,
+                                                "two_nucleotides": two_nucleotides,
+                                                "three_nucleotides": three_nucleotides,
+                                                "all_nucleotides|gap": all_nucleotides_and_gap
+                                                }
 
         # Open previously created report file
         with open(f'{output_path}/filtration_report.md', 'a+') as report_outfile:
 
             # Templates for lines
-            report_header = '|{:^98}|{:^28}|\n'.format('Assembly name', f'Similarity (>{percentage}%)')
-            empty_line_header = '|:{:^96}:|:{:^26}:|\n'.format('-' * 96, '-' * 26)
-            plasmid_header_output_line = '|{:^98}|{:^28}|\n'.format(f"<b>{input_file.stem}_filtered.fasta</b>",
-                                                                    f"{len(similarity_to_reference.keys())} plasmids")
+            report_header = '|{:^98}|{:^28}|{:^28}|{:^28}|{:^28}|{:^28}|\n'.format(
+                                                                            'Assembly name',
+                                                                            f'Coverage to reference (>{percentage}%)',
+                                                                            f'Counted NT % ({all_symbols["counted"]})',
+                                                                            f'Other ambiguous % (2 NT)',
+                                                                            f'Other ambiguous % (3 NT)',
+                                                                            f'N/Gap %')
+            empty_line_header = '|:{:^96}:|:{:^26}:|:{:^26}:|:{:^26}:|:{:^26}:|:{:^26}:|\n'.format(
+                '-' * 96, '-' * 26, '-' * 26, '-' * 26, '-' * 26, '-' * 26)
+            plasmid_header_output_line = '|{:^98}|{:^28}|{:^28}|{:^28}|{:^28}|{:^28}|\n'.format(
+                f"<b>{input_file.stem}_filtered.fasta</b>",
+                f"{len(calculations.keys())} plasmids", ' ' * 26, ' ' * 26, ' ' * 26, ' ' * 26, )
 
             # Create header in case of new file
             if report_outfile.tell() == 0:
@@ -134,9 +181,14 @@ def main():
             # Add general sample name and number of left after filtration plasmids
             report_outfile.write(plasmid_header_output_line)
             # Add similarity result to the relevant plasmid assembly
-            for plasmid_assembly_name, similarity in similarity_to_reference.items():
-                report_outfile.write(
-                    '|{:^98}|{:^28}|\n'.format(plasmid_assembly_name.lstrip(">"), similarity)
+            for plasmid_assembly_name in calculations.keys():
+                report_outfile.write('|{:^98}|{:^28}|{:^28}|{:^28}|{:^28}|{:^28}|\n'.format(
+                    plasmid_assembly_name.lstrip(">"),
+                    calculations[plasmid_assembly_name]["coverage"],
+                    calculations[plasmid_assembly_name]["counted"],
+                    calculations[plasmid_assembly_name]["two_nucleotides"],
+                    calculations[plasmid_assembly_name]["three_nucleotides"],
+                    calculations[plasmid_assembly_name]["all_nucleotides|gap"])
                 )
 
     print("Successful run!")  # For log output
