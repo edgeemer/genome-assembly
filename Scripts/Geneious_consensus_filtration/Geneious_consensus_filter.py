@@ -11,7 +11,7 @@ desc = "\nScript is used for assembly filtration and quality analysis (originall
        "\n   └ {name_3}.fasta (exists)              ├ {name_3}_filtered.fasta (will be created/overwritten) " \
        "\n                                          └ filtration_report.md    (will be created/overwritten)" \
        "\n\nIn each file, sequences are trimmed to the first non-? SYMBOL from both sides:" \
-       "\n      ?????????ACCTT????GGCC??????   => INPUT SYMBOL = ? => ACCTT????GGCC" \
+       "\n      ?????????ACCTT????GGCC?????? => ACCTT????GGCC" \
        "\nIf REFERENCE LENGTH inside HEADERS is provided ( >{your_text}_reflen_1500_{your_text} )" \
        "and PERCENTAGE is available (75 by default) sequences with lower SIMILARITY will not pass to the final files." \
        " Filtration is based on COUNTED SYMBOLS (default: N?) parsed as string. Example: -cs RYMN?" \
@@ -21,7 +21,7 @@ desc = "\nScript is used for assembly filtration and quality analysis (originall
        "MAY 02/2023, Github <https://github.com/edgeemer>"
 
 usage = "\npython <script_name>.py [-h] -i INPUT -o OUTPUT " \
-        "[-p PERCENTAGE] [-cs COUNTED_SYMBOLS] [-os OUTPUT_SYMBOL]\n" \
+        "[-p PERCENTAGE] [-cs COUNTED_SYMBOLS]\n" \
         "Options:\n" \
         "-i, --input             Input directory path\n" \
         "-o, --output            Output directory path\n" \
