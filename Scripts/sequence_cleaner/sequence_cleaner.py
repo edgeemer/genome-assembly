@@ -74,7 +74,7 @@ def main():
         # Create defaultdict to store cleaned sequences in str type
         cleaned_sequences: defaultdict[Any, str] = defaultdict(str)
         # Create defaultdict to store cleaned sequences' parameters in the nested dict
-        sequence_left: defaultdict[Any, int] = defaultdict(int)
+        sequence_left: defaultdict[Any, float] = defaultdict(float)
 
         for header, sequence in sequences.items():
             # Transform the original format of sequences (list) to the str
@@ -82,10 +82,10 @@ def main():
             # Remove all SYMBOLS from initial sequences and store them in a new defaultdict
             cleaned_sequences[header] = sub(f"[{symbols}]", "", str_sequences[header])
             # Calculate relevant statistics
-            sequence_left[header] = len(str_sequences[header]) - len(cleaned_sequences[header])
+            sequence_left[header] = round((len(cleaned_sequences[header]) / len(str_sequences[header])) * 100, 2)
 
         # Create/Overwrite the output file in the output directory
-        with open(f"{output_path}/{input_file.stem}_filtered.fasta", 'w') \
+        with open(f"{output_path}/{input_file.stem}_cleaned.fasta", 'w') \
                 as outfile:
 
             # Write cleaned sequences to the output file
