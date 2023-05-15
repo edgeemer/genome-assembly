@@ -1,3 +1,6 @@
-theme: jekyll-theme-slate
-title: Borrelia Burgdorferi project
-description: The project is funded by Genome Atlantic to study the diversity of Lyme disease-causing spirochaete bacteria (genus/species = Borrelia burgdorferi) in Nova Scotian ticks and in patient biopsies.
+theme: minimal-mistakes-jekyll
+minimal_mistakes_skin: "dark"
+name: "Dmytro Tymoshenko"
+
+title: Bacterial Genome Assembly & Procesing Pipeline
+description: This page is devoted to the obtained by me knowledge during the work with Xi Zhang <a href="https://github.com/zx0223winner">Xi Zhang</a> on genome assembly & its analysis
