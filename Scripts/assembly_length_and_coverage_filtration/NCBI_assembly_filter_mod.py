@@ -1,21 +1,25 @@
 from collections import defaultdict
-from argparse import ArgumentParser, ArgumentError
+from argparse import ArgumentParser, ArgumentError, RawTextHelpFormatter
 import os
 
 desc = "Custom script for trimming scaffolds.fasta files at the parameters of the minimum length and " \
        "minimum coverage specified by the user. If the length or coverage parameters are not provided, the " \
        "defaults of 200 bp and 5, respectively, will be used. In addition, coverage summary for all assembly " \
        "files is generated.\n " \
-       "======\n" \
-       "Usage: python3 NCBI_assembly_filter_mod.py -i /path/to/input/directory -o /path/to/output/directory " \
-       "[-l MIN_LENGTH] [-c MIN_COVERAGE]\n" \
-       "======\n" \
        "Based on NCBI_assembly_filter_defaultdict.by\nDepartment of Biochemistry and Molecular Biology, Dalhousie " \
        "University\n" \
        "This version is modified and implemented by Dmytro Tymoshenko (RA at the mentioned " \
-       "department), April 06/2023, Github <https://github.com/edgeemer>"
+       "department), May 22/2023, Github <https://github.com/edgeemer>"
 
-parser = ArgumentParser(description=desc)
+usage = "\npython3 <script_name>.py [-h] -i /path/to/input/directory -o /path/to/output/directory " \
+        "[-l MIN_LENGTH] [-c MIN_COVERAGE]\n\n" \
+        "Options:\n" \
+        "-i, --input             Input directory path\n" \
+        "-o, --output            Output directory path\n" \
+        "-l, --length            Minimum length to pass the filter (default: 200)\n" \
+        "-cs, --coverage         Minimum coverage to pass the filter (default: 5)\n"
+
+parser = ArgumentParser(description=desc, formatter_class=RawTextHelpFormatter, usage=usage)
 parser.add_argument('-i', '--input', type=str, help='Input directory path', required=True)
 parser.add_argument('-o', '--output', type=str, help='Output directory path', required=True)
 parser.add_argument('-l', '--length', type=int, help='Minimum length threshold for sequence filtering (default: 200)',
@@ -83,7 +87,7 @@ def main():
 
                 # Templates for lines
                 header = '|{:^98}|{:^28}|\n'.format('Assembly name', 'Average Coverage')
-                empty_line_header = '|:{:^96}:|:{:^26}:|\n'.format('-' * 98, '-' * 28)
+                empty_line_header = '|:{:^96}:|:{:^26}:|\n'.format('-' * 96, '-' * 26)
                 output_line = '|{:^98}|{:^28}|\n'.format(
                     f"{'.'.join(input_file.split('.')[0:-1]).split('/')[-1]}_custom.fasta", average_coverage)
 
