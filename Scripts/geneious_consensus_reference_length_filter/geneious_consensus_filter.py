@@ -13,8 +13,8 @@ desc = "\nScript is used for assembly filtration and quality analysis (originall
        "\n\nIn each file, sequences are trimmed to the first non-? SYMBOL from both sides:" \
        "\n      ?????????ACCTT????GGCC?????? => ACCTT????GGCC" \
        "\nIf REFERENCE LENGTH inside HEADERS is provided ( >{your_text}_reflen_1500_{your_text} )" \
-       "and PERCENTAGE is available (75 by default) sequences with lower SIMILARITY will not pass to the final files." \
-       " Filtration is based on COUNTED SYMBOLS (default: N?) parsed as string. Example: -cs RYMN?" \
+       "and PERCENTAGE is available (75 by default) sequences with lower COVERAGE will not pass to the final files." \
+       " Filtration is based on COUNTED SYMBOLS (default: ?N) parsed as string. Example: -cs RYMN?" \
        "\nIn the OUTPUT DIRECTORY report file is generated." \
        "\n\nDepartment of Biochemistry and Molecular Biology, Dalhousie University\n" \
        "This version is developed and implemented by Dmytro Tymoshenko (RA at the mentioned department), " \
@@ -34,8 +34,8 @@ parser.add_argument('-o', '--output', type=str, help='Output directory path', re
 parser.add_argument('-p', '--percentage', type=int, help='Percentage of known nucleotides in sequences (default: 75)',
                     default=75)
 parser.add_argument('-cs', '--counted_symbols', type=str, help='Symbols for subtracting from a sequence statistics'
-                                                               ' (default: ?)',
-                    default="?")
+                                                               ' (default: ?N)',
+                    default="?N")
 
 
 def initialisation():
@@ -164,10 +164,10 @@ def main():
                 'Assembly name',
                 f'Assembly length',
                 f'Coverage to reference (>{percentage}%)',
-                f'Counted NT % ({all_symbols["counted"]})',
-                f'Other ambiguous % (2 NT)',
-                f'Other ambiguous % (3 NT)',
-                f'N/Gap %')
+                f'{all_symbols["counted"]} %',
+                f'{all_symbols["two_nucleotides"]} %',
+                f'{all_symbols["three_nucleotides"]} %',
+                f'{all_symbols["N|gap"]} %')
             empty_line_header = '|{:^96}' + '|{:^26}' * 6 + '|\n'.format(
                 '-' * 96, '-' * 26, '-' * 26, '-' * 26, '-' * 26, '-' * 26, '-' * 26)
             plasmid_header_output_line = '|{:^98}' + '|{:^28}' * 6 + '|\n'.format(
