@@ -139,10 +139,10 @@ def main():
                         reflen, coverage, = 0, 0
 
                     # Calculate parameters of the sequence
-                    counted = int(round((sequence_calculations["counted"] / seq_length) * 100))
-                    two_nucleotides = int(round((sequence_calculations["two_nucleotides"] / seq_length) * 100))
-                    three_nucleotides = int(round((sequence_calculations["three_nucleotides"] / seq_length) * 100))
-                    N_and_gap = int(round((sequence_calculations["N|gap"] / seq_length) * 100))
+                    counted = round(((sequence_calculations["counted"] / seq_length) * 100), 2)
+                    two_nucleotides = round(((sequence_calculations["two_nucleotides"] / seq_length) * 100), 2)
+                    three_nucleotides = round(((sequence_calculations["three_nucleotides"] / seq_length) * 100), 2)
+                    N_and_gap = round(((sequence_calculations["N|gap"] / seq_length) * 100), 2)
 
                     # Filter sequences from str_sequences and write them to output file
                     # based on similarity criteria or reference length absence
