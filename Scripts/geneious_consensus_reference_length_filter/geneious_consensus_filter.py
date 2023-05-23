@@ -160,7 +160,7 @@ def main():
         with open(f'{output_path}/filtration_report.md', 'a+') as report_outfile:
 
             # Templates for lines
-            report_header = '|{:^98}' + '|{:^28}' * 6 + '|\n'.format(
+            report_header = ('|{:^98}' + '|{:^28}' * 6 + '|\n').format(
                 'Assembly name',
                 f'Assembly length',
                 f'Coverage to reference (>{percentage}%)',
@@ -168,11 +168,13 @@ def main():
                 f'{all_symbols["two_nucleotides"]} %',
                 f'{all_symbols["three_nucleotides"]} %',
                 f'{all_symbols["N|gap"]} %')
-            empty_line_header = '|{:^96}' + '|{:^26}' * 6 + '|\n'.format(
-                '-' * 96, '-' * 26, '-' * 26, '-' * 26, '-' * 26, '-' * 26, '-' * 26)
-            plasmid_header_output_line = '|{:^98}' + '|{:^28}' * 6 + '|\n'.format(
+            empty_line_header = ('|{:^96}' + '|{:^26}' * 6 + '|\n').format(
+                ':' + '-' * 96 + ':', ':' + '-' * 26 + ':', ':' + '-' * 26 + ':', ':' + '-' * 26 + ':',
+                ':' + '-' * 26 + ':', ':' + '-' * 26 + ':', ':' + '-' * 26 + ':'
+            )
+            plasmid_header_output_line = ('|{:^98}' + '|{:^28}' * 6 + '|\n').format(
                 f"<b>{input_file.stem}_filtered.fasta</b>",
-                f"{len(calculations.keys())} plasmids", ' ' * 26, ' ' * 26, ' ' * 26, ' ' * 26, ' ' * 26, )
+                f"<b>{len(calculations.keys())} plasmids/b>", '*' * 26, '*' * 26, '*' * 26, '*' * 26, '*' * 26, )
 
             # Create header in case of new file
             if report_outfile.tell() == 0:
@@ -183,7 +185,7 @@ def main():
             report_outfile.write(plasmid_header_output_line)
             # Add similarity result to the relevant plasmid assembly
             for plasmid_assembly_name in calculations.keys():
-                report_outfile.write('|{:^98}' + '|{:^28}' * 6 + '|\n'.format(
+                report_outfile.write(('|{:^98}' + '|{:^28}' * 6 + '|\n').format(
                     plasmid_assembly_name.lstrip(">"),
                     calculations[plasmid_assembly_name]["assembly_length"],
                     calculations[plasmid_assembly_name]["coverage"],
