@@ -174,7 +174,7 @@ def main():
             )
             plasmid_header_output_line = ('|{:^98}' + '|{:^28}' * 6 + '|\n').format(
                 f"<b>{input_file.stem}_filtered.fasta</b>",
-                f"<b>{len(calculations.keys())} plasmids/b>", '*' * 26, '*' * 26, '*' * 26, '*' * 26, '*' * 26, )
+                f"<b>{len(calculations.keys())} plasmids</b>", '*' * 26, '*' * 26, '*' * 26, '*' * 26, '*' * 26, )
 
             # Create header in case of new file
             if report_outfile.tell() == 0:
