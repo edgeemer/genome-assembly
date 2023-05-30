@@ -17,7 +17,7 @@ usage = "\npython3 <script_name>.py [-h] -i /path/to/input/directory -o /path/to
         "-i, --input             Input directory path\n" \
         "-o, --output            Output directory path\n" \
         "-l, --length            Minimum length to pass the filter (default: 200)\n" \
-        "-cs, --coverage         Minimum coverage to pass the filter (default: 5)\n"
+        "-c, --coverage         Minimum coverage to pass the filter (default: 5)\n"
 
 parser = ArgumentParser(description=desc, formatter_class=RawTextHelpFormatter, usage=usage)
 parser.add_argument('-i', '--input', type=str, help='Input directory path', required=True)
