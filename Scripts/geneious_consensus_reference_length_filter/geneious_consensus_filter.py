@@ -20,7 +20,7 @@ desc = "\nScript is used for assembly filtration and quality analysis (originall
        "This version is developed and implemented by Dmytro Tymoshenko (RA at the mentioned department), " \
        "MAY 22/2023, Github <https://github.com/edgeemer>"
 
-usage = "\npython <script_name>.py [-h] -i INPUT -o OUTPUT " \
+usage = "\npython3 <script_name>.py [-h] -i INPUT -o OUTPUT " \
         "[-p PERCENTAGE] [-cs COUNTED_SYMBOLS]\n" \
         "Options:\n" \
         "-i, --input             Input directory path\n" \
