@@ -268,7 +268,7 @@ def statistics_filler(consensus_statistics_total, input_path, output_path):
     with open(f'{output_path}/{input_path.name}_consensus_generator_report.md', 'a+') as report_outfile:
 
         # Templates for lines
-        report_header = ('|{:^98}' + '|{:^28}' * 6 + '|\n').format('Plasmid identifier', 'Ref length (raw)',
+        report_header = ('|{:^98}' + '|{:^28}' * 6 + '|\n').format(f'{input_path.name} plasmid', 'Ref length (raw)',
                                                                    'Consensus length', '2 nt bp', '3 nt bp',
                                                                    '4 nt bp', 'Errors')
 
