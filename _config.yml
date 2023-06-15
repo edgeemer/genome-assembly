@@ -1,6 +1,7 @@
-theme: minimal-mistakes-jekyll
-minimal_mistakes_skin: "dark"
+remote_theme: pages-themes/slate@v0.2.0
+plugins:
+- jekyll-remote-theme
 name: "Dmytro Tymoshenko"
 
-title: Bacterial Genome Assembly & Procesing Pipeline
+title: Bacterial Genome Assembly & Processing Pipeline
 description: This page is devoted to the obtained by me knowledge during the work with Xi Zhang <a href="https://github.com/zx0223winner">Xi Zhang</a> on genome assembly & its analysis
