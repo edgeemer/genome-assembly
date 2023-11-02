@@ -2,6 +2,7 @@ from collections import defaultdict
 from argparse import ArgumentParser, RawTextHelpFormatter, ArgumentError, ArgumentTypeError
 from pathlib import Path
 from copy import deepcopy
+from time import sleep
 
 desc = "Script is used for working with CONTIGS output from geneious to fill in gaps and decrease level of ambiguous" \
        "data based on the enhancer value and consensus optimization.\n" \
@@ -55,21 +56,36 @@ def output_folder_initialization(input_path, output_path):
 
 
 def start_and_end_positions(sequences):
-    start, end = 0, 0
-    length, length_assigned = 0, False
+    start, end, length = 0, 0, 0
+    initial_start_and_end_assigned = False
+
     for sequence in sequences.values():
-        if not length_assigned:
+
+        if not initial_start_and_end_assigned:
             length = len(sequence)
-        for index, char in enumerate(sequence):
-            if char != '-':
-                if index < start:
+            for index, char in enumerate(sequence):
+                if char != '-':
                     start = index
-                break
-        for index, char in enumerate(reversed(sequence)):
-            if char != '-':
-                if index < end:
+                    break
+            for index, char in enumerate(reversed(sequence)):
+                if char != '-':
                     end = index
-                break
+                    break
+            initial_start_and_end_assigned = True
+
+        if initial_start_and_end_assigned:
+            for index, char in enumerate(sequence):
+                if char != '-':
+                    if index < start:
+                        start = index
+                    break
+
+            for index, char in enumerate(reversed(sequence)):
+                if char != '-':
+                    if index < end:
+                        end = index
+                    break
+
     end = length - end - 1
     return start, end
 
@@ -116,20 +132,25 @@ def gap_definer(sequences, primary_name, gap_size_defined, seq_start_pos, seq_en
     gap_positions = []
     for index in range(seq_start_pos, seq_end_pos + 1):
         if sequences[primary_name][index] in '-' and index not in gap_positions:
-            gap_start_position = index
-            gap_end_position = index + 1
-            for gap_position in range(index, len(sequences[primary_name])):
-                if sequences[primary_name][gap_position] in '-':
-                    continue
+            gap_start_position, gap_last_position = index, index
+            end_trigger = False
+            for gap_position in range(index, seq_end_pos + 1):
+                if gap_position + 1 <= seq_end_pos:
+                    if sequences[primary_name][gap_position] in '-':
+                        continue
+                    else:
+                        gap_last_position = gap_position - 1
+                        break
                 else:
-                    gap_end_position = gap_position
+                    end_trigger = True
                     break
 
-            if gap_end_position - gap_start_position <= gap_size_defined:
-                for gap_index in range(gap_start_position, gap_end_position + 1):
-                    gap_positions.append(gap_index)
-        else:
-            continue
+            if end_trigger:
+                break
+            else:
+                if gap_last_position - gap_start_position <= gap_size_defined:
+                    for gap_index in range(gap_start_position, gap_last_position + 1):
+                        gap_positions.append(gap_index)
 
     return gap_positions
 
@@ -202,7 +223,7 @@ def score_to_value(total_score):
 
 def nt_score_calculator(base_from_sequences, primary_name):
     iupac = {
-        'AGTC': 4, 'RYMKSW': 3, 'HBVD': 2, 'N': 1, '-': 0
+        'AGTC': 4, 'RYMKSW': 3, 'HBVD': 2, 'N-': 0
     }
 
     total_score, primary_score, enhancer_score, primary_4nt, enhancer_4nt, primary_val = \
@@ -218,11 +239,11 @@ def nt_score_calculator(base_from_sequences, primary_name):
         if primary_val in bases:
             primary_quality = score
 
-    if (total_quality == primary_quality == 0 and
-            primary_4nt + enhancer_4nt >= 2):
+    if total_quality == primary_quality == 0 and primary_4nt + enhancer_4nt >= 2:
+        print(f"\n\n{total_val} | {primary_val}\n{total_quality} | {primary_quality}\n{primary_4nt} | {enhancer_4nt}")
+        sleep(5)
         return 'N'
-    elif (total_quality == primary_quality == 0 and
-          primary_4nt + enhancer_4nt < 2):
+    elif total_quality == primary_quality == 0 and primary_4nt + enhancer_4nt < 2:
         return ''
     elif total_quality > primary_quality:
         return total_val
@@ -242,7 +263,7 @@ def consensus_generator(input_file, gap_size_defined):
 
     consensus = {primary_name: []}
 
-    for nt_index in range(start_position, end_position):
+    for nt_index in range(start_position, end_position + 1):
         if nt_index in gap_positions:
             continue
 
@@ -250,7 +271,8 @@ def consensus_generator(input_file, gap_size_defined):
         for header in sequences.keys():
             base_from_sequences[header] = sequences[header][nt_index]
 
-        consensus[primary_name].append(nt_score_calculator(base_from_sequences, primary_name))
+        t = nt_score_calculator(base_from_sequences, primary_name)
+        consensus[primary_name].append(t)
 
     consensus[primary_name] = ''.join(consensus[primary_name])
     consensus_statistics = {
