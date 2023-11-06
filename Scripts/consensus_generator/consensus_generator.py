@@ -55,13 +55,11 @@ def output_folder_initialization(input_path, output_path):
         report_outfile.write('')
 
 
-def start_and_end_positions(sequences):
+def start_and_end_positions(sequences, primary_name):
     start, end, length = 0, 0, 0
-    initial_start_and_end_assigned = False
 
-    for sequence in sequences.values():
-
-        if not initial_start_and_end_assigned:
+    for header, sequence in sequences.items():
+        if header == primary_name:
             length = len(sequence)
             for index, char in enumerate(sequence):
                 if char != '-':
@@ -70,14 +68,6 @@ def start_and_end_positions(sequences):
             for index, char in enumerate(reversed(sequence)):
                 if char != '-':
                     end = index
-                    break
-            initial_start_and_end_assigned = True
-
-        if initial_start_and_end_assigned:
-            for index, char in enumerate(sequence):
-                if char != '-':
-                    if index < start:
-                        start = index
                     break
 
             for index, char in enumerate(reversed(sequence)):
@@ -96,7 +86,7 @@ def file_to_dict(file):
 
     # Create defaultdict to store sequences keyed by header, get header name for the reference separately
     sequences = defaultdict(list)
-    primary_name, header, reference_length = 'Error', '', 'Not provided'
+    primary_name, header, reference_length = 'Error', '', 'N/A'
     primary_assigned = False
     enhancer_id = 1
     for line in lines:
@@ -257,7 +247,7 @@ def consensus_generator(input_file, gap_size_defined):
     primary_name, sequences, reference_length = file_to_dict(input_file)
 
     # Get position of the first and the last non-gap nucleotide of the reference
-    start_position, end_position = start_and_end_positions(sequences)
+    start_position, end_position = start_and_end_positions(sequences, primary_name)
 
     gap_positions = gap_definer(sequences, primary_name, gap_size_defined, start_position, end_position)
 
