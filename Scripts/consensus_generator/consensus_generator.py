@@ -11,7 +11,7 @@ desc = "Script is used for working with CONTIGS output from geneious to fill in 
        "Primary = working sequence, assembly to be improved\n" \
        "Enhancer = reference sequence/reads to reference sequence\n\n" \
        "If _reflen_ is provided (XXXX_reflen_500_YYYY) it will be displayed in the output report as:\n" \
-       "XXX plasmids | Reference length: 500\n\n" \
+       "XXX sequences | Reference length: 500\n\n" \
        "If there is no nucleotides with a good score, N will be placed only in case if number of N values for the" \
        "same base position >=2. If the base quality is decreased (total score), Primary value will be used"
 
@@ -300,7 +300,7 @@ def statistics_filler(consensus_statistics_total, input_path, output_path):
     with open(f'{output_path}/{input_path.name}_consensus_generator_report.md', 'a+') as report_outfile:
 
         # Templates for lines
-        report_header = ('|{:^98}' + '|{:^28}' * 6 + '|\n').format(f'{input_path.name} plasmids', 'Reference length',
+        report_header = ('|{:^98}' + '|{:^28}' * 6 + '|\n').format(f'{input_path.name} sequences', 'Reference length',
                                                                    'Consensus length', '2 nt bp', '3 nt bp',
                                                                    '4 nt bp', 'Errors')
 
